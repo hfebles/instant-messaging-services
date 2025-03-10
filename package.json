@@ -2,7 +2,7 @@
   "name": "instant-messaging-services",
   "version": "1.0.0",
   "description": "Service for managing instant messaging through a webhook with WhatsApp Web",
-  "homepage": "https://github.com/npm/example#readme",
+  "homepage": "https://github.com/hfebles/instant-messaging-services/blob/master/README.md",
   "license": "ISC",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/npm/cli.git"
+    "url": "git+https://github.com/hfebles/instant-messaging-services"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.16",
