@@ -1,3 +1,6 @@
+![image]( https://img.shields.io/badge/version-1.0.0-3c873a)
+![image]( https://img.shields.io/badge/LICENSE-ISC-337aff)
+
 This microservice enables seamless integration between the self-hosted community version of Chatwood on AWS and WhatsApp Web, leveraging whiskeysockets baileys for a secure and efficient connection.
 
 With this solution, businesses can manage multiple agents from a single WhatsApp number, centralizing customer interactions and enhancing the support experience.
@@ -12,4 +15,6 @@ With this solution, businesses can manage multiple agents from a single WhatsApp
 This microservice is designed to streamline business communication, ensuring fast and well-organized customer service.
 
 
-
+<p style="margin-top:40px;" align="center">
+    <img src="https://skillicons.dev/icons?i=nodejs,aws,serverless&perline=8" />
+</p>
