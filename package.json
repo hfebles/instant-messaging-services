@@ -1,0 +1,41 @@
+{
+  "name": "instant-messaging-services",
+  "version": "1.0.0",
+  "description": "Service for managing instant messaging through a webhook with WhatsApp Web",
+  "homepage": "https://github.com/npm/example#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "WhatsApp Web",
+    "whatsApp web",
+    "whatsApp",
+    "web",
+    "instant messaging",
+    "messaging",
+    "instant",
+    "webhook",
+    "service"
+  ],
+  "authors": [
+    {
+      "name": "Jesus Hernandez",
+      "email": "jehfebles@gmail.com",
+      "url": "https://github.com/hfebles"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/npm/cli.git"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.16",
+    "axios": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "qrcode": "^1.5.4"
+  }
+}
