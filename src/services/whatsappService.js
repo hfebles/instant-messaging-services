@@ -60,8 +60,6 @@ class WhatsAppService {
   async handleMessage({ messages }) {
     const m = messages[0];
 
-    // console.log(JSON.stringify(m, null, 2));
-
     if (m.key.fromMe || m.key.remoteJid.includes('status@broadcast')) {
       return;
     }

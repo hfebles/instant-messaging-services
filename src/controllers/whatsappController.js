@@ -1,9 +1,13 @@
 const whatsappService = require('../services/whatsappService');
 
 exports.webhook = async (req, res) => {
+  // const { imbox, acc } = req.query;
+
   try {
     if (req.body.message_type == 'outgoing') {
       const body = req.body;
+      console.log(req.query);
+
       const to = body.conversation.meta.sender.identifier;
       const message = body.content;
 

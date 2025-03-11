@@ -18,3 +18,18 @@ This microservice is designed to streamline business communication, ensuring fas
 <p style="margin-top:40px;" align="center">
     <img src="https://skillicons.dev/icons?i=nodejs,aws,serverless&perline=8" />
 </p>
+
+
+--- 
+## Instalacion
+
+1. Clonar el repositorio:
+```
+git clone https://github.com/hfebles/instant-messaging-services
+```
+
+2. Instalar las dependencias: 
+```
+npm i
+```
+
