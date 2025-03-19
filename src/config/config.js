@@ -1,7 +1,6 @@
 require('dotenv').config();
-const args = require('minimist')(process.argv.slice(2));
 module.exports = {
-  port: args.port,
+  port: process.env.PORT,
   chatwoot: {
     baseUrl: process.env.CHATWOOT_BASE_URL,
     apiKey: process.env.CHATWOOT_API_KEY,
