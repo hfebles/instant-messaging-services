@@ -3,3 +3,8 @@ node_modules/
 qr.png
 sessions/
 package-lock.json
+*.mp4
+*.mp3
+*.jpg
+*.jpeg
+*.png

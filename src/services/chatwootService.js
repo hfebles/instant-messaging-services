@@ -1,5 +1,9 @@
 const axios = require('axios');
 const config = require('../config/config');
+const FormData = require('form-data');
+const fs = require('fs');
+
+const { downloadMediaMessage } = require('@whiskeysockets/baileys');
 
 class ChatwootService {
   constructor() {
@@ -61,8 +65,6 @@ class ChatwootService {
           headers: this.headers,
         }
       );
-
-      // console.log(.id)
       return response.data.data.payload;
     } catch (error) {
       console.error('Error searching conversations:', error.message);
@@ -122,6 +124,48 @@ class ChatwootService {
         },
         { headers: this.headers }
       );
+      return response.data;
+    } catch (error) {
+      console.error('Error sending message:', error.message);
+      throw error;
+    }
+  }
+  async sendMediaMessage(conversationId, message, type) {
+    const buffer = await downloadMediaMessage(message, 'buffer');
+    // const extension = type === 'audio' ? 'mp3' : 'jpg';
+    let extension = null;
+
+    switch (type) {
+      case 'audio':
+        extension = 'mp3';
+        break;
+      case 'video':
+        extension = 'mp4';
+        break;
+      default:
+        extension = 'jpg';
+
+        break;
+    }
+
+    const fileName = `${type}-${message.key.id}.${extension}`;
+    const filePath = `./media/${type}/${fileName}`;
+    fs.writeFileSync(filePath, buffer);
+
+    var form = new FormData();
+    form.append('message_type', 'incoming');
+    form.append('attachments[]', fs.createReadStream(filePath));
+    const formHeaders = form.getHeaders();
+
+    try {
+      const response = await axios.post(
+        `${this.baseUrl}/api/v1/accounts/${config.chatwoot.accountId}/conversations/${conversationId}/messages`,
+        form,
+        {
+          headers: { ...formHeaders, api_access_token: config.chatwoot.apiKey },
+        }
+      );
+
       return response.data;
     } catch (error) {
       console.error('Error sending message:', error.message);

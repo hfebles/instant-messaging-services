@@ -59,19 +59,39 @@ class WhatsAppService {
 
   async handleMessage({ messages }) {
     const m = messages[0];
+    // console.log(m);
+    // return;
 
     if (m.key.fromMe || m.key.remoteJid.includes('status@broadcast')) {
       return;
     }
 
-    if (m.message && m.key.remoteJid.includes('@s.whatsapp.net')) {
-      const sender = m.key.remoteJid.replace('@s.whatsapp.net', '');
+    const sender = m.key.remoteJid.replace('@s.whatsapp.net', '');
+
+    if (m.message.conversation || m.message.extendedTextMessage?.text) {
       const messageText =
         m.message.conversation || m.message.extendedTextMessage?.text;
+      await this.forwardMessageToChatwoot(sender, messageText);
+    }
 
-      if (messageText) {
-        await this.forwardMessageToChatwoot(sender, messageText);
-      }
+    if (m.message.audioMessage) {
+      await this.handleMediaMessage(m, sender, 'audio');
+    }
+
+    if (m.message.imageMessage) {
+      await this.handleMediaMessage(m, sender, 'image');
+    }
+
+    if (m.message.videoMessage) {
+      await this.handleMediaMessage(m, sender, 'video');
+    }
+  }
+
+  async handleMediaMessage(m, sender, type) {
+    try {
+      await this.forwardMessageMediaToChatwoot(sender, m, type);
+    } catch (error) {
+      console.error(`❌ Error al procesar ${type}:`, error);
     }
   }
 
@@ -91,12 +111,6 @@ class WhatsAppService {
         contact.id
       );
 
-      /**
-       * Puedo sacar de `conversations` el imbox_id y asignarlo en los agentes de ese imbox.
-       */
-
-      // console.log(JSON.stringify(conversations, null, 2));
-
       const idConv = conversations
         .filter((conv) => conv.meta?.sender?.phone_number === `+${phoneNumber}`)
         .map((conv) => conv.id)[0];
@@ -105,18 +119,42 @@ class WhatsAppService {
       } else {
         conversation = await chatwootService.createConversation(contact.id);
         await chatwootService.sendMessage(conversation.id, message);
-        let msgCliente = `Hola, Somos X, tu mensaje fue recibido, pero primero necesitamos los siguientes datos: \n\nNombre y Apellido: \nDNI: \nMotivo de la consulta:`;
-
-        let msgAuto = `Respuesta Automatica:
-          Hola, Somos X, tu mensaje fue recibido, pero primero necesitamos los siguientes datos: 
-          Nombre y Apellido
-          DNI
-          Motivo de la consulta`;
-        await this.sendMessage(contact.identifier, msgCliente);
         const agents = await chatwootService.asignAgentsToConversation(
           conversation.id
         );
-        await chatwootService.sendMessage(conversation.id, msgAuto);
+      }
+    } catch (error) {
+      console.error('Error forwarding message to Chatwoot:', error);
+    }
+  }
+
+  async forwardMessageMediaToChatwoot(phoneNumber, message, type) {
+    try {
+      let conversation;
+      let contact = await chatwootService.searchContact(phoneNumber);
+      if (!contact) {
+        contact = await chatwootService.createContact(phoneNumber);
+        if (!contact || !contact.id) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          contact = await chatwootService.searchContact(phoneNumber);
+        }
+      }
+
+      const conversations = await chatwootService.searchConversations(
+        contact.id
+      );
+
+      const idConv = conversations
+        .filter((conv) => conv.meta?.sender?.phone_number === `+${phoneNumber}`)
+        .map((conv) => conv.id)[0];
+      if (idConv != undefined) {
+        await chatwootService.sendMediaMessage(idConv, message, type);
+      } else {
+        conversation = await chatwootService.createConversation(contact.id);
+        await chatwootService.sendMediaMessage(conversation.id, message, type);
+        const agents = await chatwootService.asignAgentsToConversation(
+          conversation.id
+        );
       }
     } catch (error) {
       console.error('Error forwarding message to Chatwoot:', error);
@@ -125,7 +163,7 @@ class WhatsAppService {
 
   async sendMessage(to, message) {
     if (this.sock) {
-      await this.sock.sendMessage(to, { text: message });
+      await this.sock.sendMessage(to, message);
     }
   }
 }
