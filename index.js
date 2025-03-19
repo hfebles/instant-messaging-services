@@ -6,7 +6,6 @@ const whatsappRoutes = require('./src/routes/whatsappRoutes');
 const app = express();
 
 app.use(express.json());
-console.log(config);
 
 // Rutas
 app.use('/api/whatsapp', whatsappRoutes);
